@@ -25,7 +25,7 @@ public class UserImpl implements User {
 	Connection con=null;
 	DataBaseCon dbcon = new DataBaseCon();
 	Product product = new Product();
-	UserImpl userimpl=new UserImpl();
+	
 	public void getUserInformation(String firstName, String lastName, String userName, String password, String city,
 			String mail_id, String moble_no) {
 		Connection con = dbcon.getConnection();
@@ -126,17 +126,17 @@ public class UserImpl implements User {
 		try {
 			Connection con = dbcon.getConnection();
 			// use/create prepareStatement
-			PreparedStatement ps = con.prepareStatement("select * from mini_project_group_e.product");
+			PreparedStatement ps = con.prepareStatement("select * from mini_project_group_e.product ORDER BY name");
 			// use result set to view product List
 			ResultSet rs = ps.executeQuery();
 			// while loop
 			ArrayList al = new ArrayList();
 			while (rs.next()) {
 				System.out.println("Product id>>" + rs.getInt(1));
-				System.out.println("Product id>>" + rs.getString(2));
-				System.out.println("Product id>>" + rs.getString(3));
-				System.out.println("Product id>>" + rs.getInt(4));
-				System.out.println("Product id>>" + rs.getInt(5));
+				System.out.println("Product Name>>" + rs.getString(2));
+				System.out.println("Product Description>>" + rs.getString(3));
+				System.out.println("Product Price>>" + rs.getInt(4));
+				System.out.println("Product Quantity>>" + rs.getInt(5));
 
 				/*
 				 * al.add(rs.getInt(1)); al.add(rs.getString(2)); al.add(rs.getString(3));
@@ -189,7 +189,7 @@ public class UserImpl implements User {
 			Scanner scanner = new Scanner(System.in);
 			String view_cart = scanner.next();
 			if (view_cart.equalsIgnoreCase("yes")) {
-				
+				UserImpl userimpl=new UserImpl();
 				userimpl.viewCart();
 			}
 			else {
@@ -287,6 +287,7 @@ public class UserImpl implements User {
 
 		//System.out.println("Total amount to pay: " + totalAmount);
 		System.out.println("Purchase finalized. Thank you for shopping with us!");
+		UserImpl userimpl=new UserImpl();
 		userimpl.savePurchaseHistory();
 	}
 	@Override

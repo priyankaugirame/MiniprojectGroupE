@@ -76,17 +76,16 @@ public class EcommerceMain { // This is main class
 			System.out.println("Login First!!!");
 			userimpl.getUserLoginDetails();
 			// calling the method to add the products into the cart
-			/*System.out.println("Enter Product id>>");
-			sc = new Scanner(System.in);
-			int pid = sc.nextInt();
-			System.out.println("Enter the Quantity>>");
-			int qty = sc.nextInt();
-			*/
+			/*
+			 * System.out.println("Enter Product id>>"); sc = new Scanner(System.in); int
+			 * pid = sc.nextInt(); System.out.println("Enter the Quantity>>"); int qty =
+			 * sc.nextInt();
+			 */
 			userimpl.getBuyProduct();
 			break;
 		case 5:
-			//System.out.println("Login First!!!");
-			//userimpl.getUserLoginDetails();
+			// System.out.println("Login First!!!");
+			// userimpl.getUserLoginDetails();
 			// Calling the method to view the cart
 			userimpl.viewCart();
 			break;
@@ -94,7 +93,7 @@ public class EcommerceMain { // This is main class
 			System.out.println("Login First!!!");
 			userimpl.getUserLoginDetails();
 			System.out.println("Enter your user name");
-			String name=sc.next();
+			String name = sc.next();
 			// calling the method to purchase the items in the cart
 			userimpl.purchaseTheItem(name);
 			break;

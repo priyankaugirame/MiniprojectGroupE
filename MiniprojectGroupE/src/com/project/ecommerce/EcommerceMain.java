@@ -85,8 +85,8 @@ public class EcommerceMain { // This is main class
 			userimpl.getBuyProduct();
 			break;
 		case 5:
-			System.out.println("Login First!!!");
-			userimpl.getUserLoginDetails();
+			//System.out.println("Login First!!!");
+			//userimpl.getUserLoginDetails();
 			// Calling the method to view the cart
 			userimpl.viewCart();
 			break;

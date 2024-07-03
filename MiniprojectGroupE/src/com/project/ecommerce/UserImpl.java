@@ -99,7 +99,8 @@ public class UserImpl implements User {
 			// create object and call getconnection() method
 			 con = dbcon.getConnection();
 			// use/create prepareStatement
-			PreparedStatement ps = con.prepareStatement("select * from user");
+			PreparedStatement ps = con.prepareStatement("select * from user where username=?");
+			ps.setString(1, uname);
 			// Submit the SQL Statement to database
 			ResultSet rs = ps.executeQuery();
 			//use while loop to check username & password is present into table
@@ -108,7 +109,8 @@ public class UserImpl implements User {
 				if (uname.equals(rs.getString(4)) && pword.equals(rs.getString(5))) {
 					// user will login the system
 					System.out.println("Login Successfull!!");
-				} else {
+				} 
+				else {
 					System.out.println("Login Failed!!!");
 				}
 			}
@@ -130,7 +132,6 @@ public class UserImpl implements User {
 			// use result set to view product List
 			ResultSet rs = ps.executeQuery();
 			// while loop
-			ArrayList al = new ArrayList();
 			while (rs.next()) {
 				System.out.println("Product id>>" + rs.getInt(1));
 				System.out.println("Product Name>>" + rs.getString(2));
@@ -167,16 +168,22 @@ public class UserImpl implements User {
 	public void buyProduct(String uname,int pid, int qty) {// add to cart
 		try {
 			con=dbcon.getConnection();
+			int prod_id=0;
+			String prod_name=null;
+			String prod_dis=null;
+			int prod_price=0;
+			int prod_qty=0;
 			PreparedStatement ps=con.prepareStatement("select id,name,discription,price,quantity from product where id=?");
 			ps.setInt(1, pid);
 			ResultSet rs=ps.executeQuery();
 			while(rs.next())
 			{
-				int prod_id=rs.getInt(1);
-				String prod_name=rs.getString(2);
-				String prod_dis=rs.getString(3);
-				int prod_price=rs.getInt(4);
-				int prod_qty=rs.getInt(5);
+				prod_id=rs.getInt(1);
+				prod_name=rs.getString(2);
+				prod_dis=rs.getString(3);
+				prod_price=rs.getInt(4);
+				prod_qty=rs.getInt(5);
+			}
 			if(prod_qty>=qty) {
 			PreparedStatement pst=con.prepareStatement("insert into cart(user_name,product_id,product_name,product_discription,price,quantity)values(?,?,?,?,?,?)");
 			pst.setString(1, uname);
@@ -184,7 +191,8 @@ public class UserImpl implements User {
 			pst.setString(3, prod_name);
 			pst.setString(4, prod_dis);
 			pst.setInt(5, prod_price);
-			pst.setInt(6, prod_qty);
+			pst.setInt(6, qty);
+			int a=pst.executeUpdate();
 			System.out.println("Do you want to view cart?");
 			Scanner scanner = new Scanner(System.in);
 			String view_cart = scanner.next();
@@ -215,7 +223,7 @@ public class UserImpl implements User {
 			ps.close();
 			rs.close();
 		} */
-			}
+	
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -226,25 +234,21 @@ public class UserImpl implements User {
 		con = dbcon.getConnection();
 		PreparedStatement ps;
 		try {
+			System.out.println("Enter user name>>>");
+			sc=new Scanner(System.in);
+			String uname=sc.next();
 			ps = con.prepareStatement("select * from cart where user_name=?");
-			ps.setString(1,"priyanka");
-
+			ps.setString(1,uname);
 			ResultSet rs = ps.executeQuery();
-
-			if (rs.next()) {
 				System.out.println("Your Cart contain:");
 				while (rs.next()) {
 					System.out.println("Item no.>>>" + rs.getInt(1));
-					System.out.println("Product id.>>>" + rs.getInt(2));
-					System.out.println("Product name.>>>" + rs.getString(3));
-					System.out.println("product Discription>>>" + rs.getString(4));
-					System.out.println("Quantity" + rs.getInt(5));
+					System.out.println("Product id.>>>" + rs.getInt(3));
+					System.out.println("Product name.>>>" + rs.getString(4));
+					System.out.println("product Discription>>>" + rs.getString(5));
+					System.out.println("Quantity" + rs.getInt(7));
 					System.out.println("Price >>>" + rs.getInt(6));
-				}
-			} else {
-				System.out.println("Your cart is Empty!!!");
-			}
-		} catch (SQLException e) {
+			} 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -253,40 +257,18 @@ public class UserImpl implements User {
 	@Override
 	public void purchaseTheItem(String uname) {
 		
-		con=dbcon.getConnection();
-		try {
-			PreparedStatement ps=con.prepareStatement("select * from cart where user_name=?");
-			ps.setString(1,uname);
-			System.out.println("Cart fetched sucussesfully");
-			ResultSet rs=ps.executeQuery();
-			while(rs.next()) {
-				product.setProductid(rs.getInt(3));
-				product.setProductName(rs.getString(4));
-				product.setQuantity(rs.getInt(5));
-				product.setPrice(rs.getInt(6));
-				
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println("Enter your username:");
-		Scanner scanner = new Scanner(System.in);
-        String username = scanner.next();
-        
-        //int pid = product.getProductid();
-        float total;
-		//if(pid!=0)
-		 total = product.getPrice() * product.getQuantity();
-		//System.out.println("Total cost: " + total);
-		System.out.println("Enter your username to confirm purchase:");
-		if (username != null) {
-
-			System.out.println("Your total is>>"+total);
-		}
-
-		//System.out.println("Total amount to pay: " + totalAmount);
-		System.out.println("Purchase finalized. Thank you for shopping with us!");
+			AdminImpl admin=new AdminImpl();
+			int total=admin.calculateBill();
+			
+			 if(total>0)
+			 {
+				//System.out.println("Your total is>>"+total);
+				System.out.println("Purchase finalized. Thank you for shopping with us!");
+			 }
+			 else {
+				 System.out.println("Your cart is empty!!!");
+			 }
+		      //System.out.println("Total amount to pay: " + totalAmount);
 		UserImpl userimpl=new UserImpl();
 		userimpl.savePurchaseHistory();
 	}
@@ -298,9 +280,11 @@ public class UserImpl implements User {
 
 	@Override
 	public void savePurchaseHistory() {
-		con=dbcon.getConnection();
+	/*	con=dbcon.getConnection();
 		try {
-			PreparedStatement pst=con.prepareStatement("insert into userpurchase(product_id,product_name,quantity,price,user_id) values(?,?,?,?,?)");
+
+			PreparedStatement pst=con.prepareStatement("select * from cart where user_id=?");
+					"insert into userpurchase(product_id,product_name,quantity,price,user_id) values(?,?,?,?,?)");
 			pst.setInt(1,pid);
 			pst.setString(2, name);
 			pst.setInt(3, qty);
@@ -309,7 +293,7 @@ public class UserImpl implements User {
 			} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
 	}
 
